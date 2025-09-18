@@ -41,7 +41,7 @@ load_data loads the input data by calling the provided utility.
 You can adjust default values for stemming and lowercase, when we haven't passed in specific values,
 to potentially improve performance.
 """
-def load_data(trainingdir, testdir, stemming=False, lowercase=False, silently=False):
+def load_data(trainingdir, testdir, stemming=True, lowercase=True, silently=False):
     print(f"Stemming: {stemming}")
     print(f"Lowercase: {lowercase}")
     train_set, train_labels, dev_set, dev_labels = reader.load_dataset(trainingdir,testdir,stemming,lowercase,silently)
