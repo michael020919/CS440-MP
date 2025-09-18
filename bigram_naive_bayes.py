@@ -53,7 +53,7 @@ Main function for training and predicting with the bigram mixture model.
     You can modify the default values for the Laplace smoothing parameters, model-mixture lambda parameter, and the prior for the positive label.
     Notice that we may pass in specific values for these parameters during our testing.
 """
-def bigram_bayes(train_set, train_labels, dev_set, unigram_laplace=1.0, bigram_laplace=2.0, bigram_lambda=0.26, pos_prior=0.42, silently=False):
+def bigram_bayes(train_set, train_labels, dev_set, unigram_laplace=0.78, bigram_laplace=1.8, bigram_lambda=0.26, pos_prior=0.42, silently=False):
     print_values_bigram(unigram_laplace,bigram_laplace,bigram_lambda,pos_prior)
     ##The code in MP1
     #Building up the map
@@ -121,12 +121,13 @@ def bigram_bayes(train_set, train_labels, dev_set, unigram_laplace=1.0, bigram_l
         yhats.append(-1)
 
     i = 0
+    log_pos_prior = math.log(max(1e-12, pos_prior))
+    log_neg_prior = math.log(max(1e-12, 1.0 - pos_prior))
     for rev in dev_set:
-        uni_pos = math.log(pos_prior)
-        uni_neg = math.log(1.0 - pos_prior)
-        bi_pos = math.log(pos_prior)
-        bi_neg = math.log(1.0 - pos_prior)
-
+        uni_pos = 0.0
+        uni_neg = 0.0
+        bi_pos = 0.0
+        bi_neg = 0.0
         for w in rev:
             if w in pos_prob:
                 uni_pos += pos_prob[w]
@@ -154,8 +155,8 @@ def bigram_bayes(train_set, train_labels, dev_set, unigram_laplace=1.0, bigram_l
             else:
                 bi_neg += math.log(bigram_laplace/(bi_n_neg + bigram_laplace * (bi_V + 1)))
 
-        score_pos = (1 - bigram_lambda) * uni_pos + bigram_lambda * bi_pos
-        score_neg = (1 - bigram_lambda) * uni_neg + bigram_lambda * bi_neg
+        score_pos = log_pos_prior + (1 - bigram_lambda)*uni_pos + bigram_lambda*bi_pos
+        score_neg = log_neg_prior + (1 - bigram_lambda)*uni_neg + bigram_lambda*bi_neg
 
         if score_pos > score_neg:
             yhats[i] = 1
