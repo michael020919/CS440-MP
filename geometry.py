@@ -86,8 +86,8 @@ def is_point_in_polygon(point, polygon):
     if AB[0]*AD[1] - AB[1]*AD[0] == 0:
         return False
 
-    s = (AP[0]*AD[1] - AP[1]*AD[0]) / AB[0]*AD[1] - AB[1]*AD[0]
-    t = (AB[0]*AP[1] - AB[1]*AP[0]) / AB[0]*AD[1] - AB[1]*AD[0]
+    s = (AP[0]*AD[1] - AP[1]*AD[0]) / (AB[0]*AD[1] - AB[1]*AD[0])
+    t = (AB[0]*AP[1] - AB[1]*AP[0]) / (AB[0]*AD[1] - AB[1]*AD[0])
 
     return 0 <= s <= 1 and 0 <= t <= 1
 
