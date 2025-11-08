@@ -97,7 +97,14 @@ def viterbi_stepforward(i, char, prev_prob, prev_predict_char_seq, emit_prob, tr
     # implement one step of trellis computation at column (i)
     # You should pay attention to the i=0 special case.
     states = emit_prob.keys()
-
+    if i == 0 and (not prev_prob):
+        prev_prob = {}
+        prev_predict_char_seq = {}
+        row = trans_prob.get('^', {})
+        for s in states:
+            prev_prob[s] = math.log(row.get(s, epsilon_for_pt))
+            prev_predict_char_seq[s] = []
+        
     for s in states:
         t = emit_prob[s].get('<UNSEEN>', emit_epsilon)
         e = emit_prob[s].get(char, t)
@@ -150,13 +157,13 @@ def viterbi_1(train, test, get_probs=training):
         # according to the storage of probabilities and sequences, get the final prediction.
         output_val = None
         output_state = None
-        for s in log_prob:
-            if '$' in trans_prob[s]:
-                tp_end = trans_prob[s]['$']
-            else:
-                tp_end = 0.0
-            val = log_prob[s] + math.log(tp_end)
-            if (output_val is None) or (val > output_val):
+        for s, v in log_prob.items():
+            tp_end = trans_prob.get(s, {}).get('$', epsilon_for_pt)
+            if tp_end <= 0.0:
+                tp_end = epsilon_for_pt
+
+            val = v + math.log(tp_end)
+            if output_val is None or val > output_val:
                 output_val = val
                 output_state = s
 
