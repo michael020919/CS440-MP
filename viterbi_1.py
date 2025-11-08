@@ -47,7 +47,7 @@ def training(sentences):
             trans_cnt['^'][first] = trans_cnt['^'].get(first, 0) + 1
 
             for i in range(len(correct) - 1):
-                if a not in trans_cnt:
+                if correct[i] not in trans_cnt:
                     trans_cnt[correct[i]] = {}
                 trans_cnt[correct[i]][correct[i + 1]] = trans_cnt[correct[i]].get(correct[i + 1], 0) + 1
                 hidden_states.add(correct[i])
